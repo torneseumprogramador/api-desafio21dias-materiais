@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using api_desafio21dias.Models;
 using api_desafio21dias.Servicos;
 using EntityFrameworkPaginateCore;
+using System.Net.Http;
 
 namespace api_desafio21dias.Controllers
 {
@@ -56,11 +57,14 @@ namespace api_desafio21dias.Controllers
         {
             if (ModelState.IsValid)
             {
+                if(! (await AlunoServico.ValidarUsuario(material.AlunoId)) )
+                    return StatusCode(400, new { Mensagem = "O usuário passado não é válido ou não está cadastrado" });
+
                 _context.Add(material);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return StatusCode(201, material);
             }
-            return StatusCode(201, material);
+            return StatusCode(400, new { Mensagem = "O Material passado é inválido" });
         }
 
         // PUT: /materiais/5
@@ -70,6 +74,9 @@ namespace api_desafio21dias.Controllers
         {
             if (ModelState.IsValid)
             {
+                if(! (await AlunoServico.ValidarUsuario(material.AlunoId)) )
+                    return StatusCode(400, new { Mensagem = "O usuário passado não é válido ou não está cadastrado" });
+
                 try
                 {
                     material.Id = id;
