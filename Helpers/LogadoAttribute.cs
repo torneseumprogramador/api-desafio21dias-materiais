@@ -16,6 +16,9 @@ namespace web_renderizacao_server_side.Helpers
     {
         var authorization = filterContext.HttpContext.Request.Headers["Authorization"].ToString();
 
+        Console.WriteLine("=======[" + authorization + "]=========");
+
+
         if(string.IsNullOrEmpty(authorization)){
           filterContext.Result = new StatusCodeResult(StatusCodes.Status401Unauthorized);
           return;
@@ -31,6 +34,11 @@ namespace web_renderizacao_server_side.Helpers
 
             HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Head, "/token");
             var response = http.Send(request);
+
+
+            Console.WriteLine("=======[" + response.StatusCode + "]=========");
+
+
             if(response.StatusCode != HttpStatusCode.NoContent){
                 filterContext.Result = new StatusCodeResult(StatusCodes.Status401Unauthorized);
                 return;

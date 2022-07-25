@@ -10,6 +10,7 @@ using api_desafio21dias.Servicos;
 using EntityFrameworkPaginateCore;
 using System.Net.Http;
 using web_renderizacao_server_side.Helpers;
+using Microsoft.AspNetCore.Http;
 
 namespace api_desafio21dias.Controllers
 {
@@ -59,7 +60,9 @@ namespace api_desafio21dias.Controllers
         {
             if (ModelState.IsValid)
             {
-                if(! (await AlunoServico.ValidarUsuario(material.AlunoId)) )
+                var token = base.Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+                Console.WriteLine("========[" + token + "]=======");
+                if(! (await AlunoServico.ValidarUsuario(material.AlunoId, token)) )
                     return StatusCode(400, new { Mensagem = "O usuário passado não é válido ou não está cadastrado" });
 
                 _context.Add(material);
@@ -76,7 +79,8 @@ namespace api_desafio21dias.Controllers
         {
             if (ModelState.IsValid)
             {
-                if(! (await AlunoServico.ValidarUsuario(material.AlunoId)) )
+                var token = base.Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+                if(! (await AlunoServico.ValidarUsuario(material.AlunoId, token)) )
                     return StatusCode(400, new { Mensagem = "O usuário passado não é válido ou não está cadastrado" });
 
                 try
